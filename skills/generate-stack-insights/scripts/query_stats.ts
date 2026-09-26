@@ -4,7 +4,9 @@ import { gte, eq, and } from 'drizzle-orm';
 
 const connectionString =
   process.env.DATABASE_URL ||
-  'postgresql://postgres:8tXVcrf344Wi7RyZ@db.adllanonfuwlrruwwvel.supabase.co:5432/postgres';
+  (() => {
+    throw new Error('DATABASE_URL environment variable is required.');
+  })();
 
 const db = createDbClient(connectionString);
 

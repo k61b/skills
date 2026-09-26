@@ -14,7 +14,7 @@ because they refine the original plan:
   used both as a link hover text color AND as a soft ambient background
   blur. On light pastel, a light peach glow fails as text (only ~2:1). It's
   now defined purely for decorative blurred backgrounds (`bg-accent-glow/20
-  blur-[130px]` in `SurveyWizard.tsx`, `hover:text-accent-glow` in
+blur-[130px]` in `SurveyWizard.tsx`, `hover:text-accent-glow` in
   `index.astro`). **Any remaining `text-accent-glow` usage must be swapped
   to `text-accent-ink` (or `accent-active` for a hover-darkening effect)
   when that file is refactored** — see the "accent-as-text" warning below.
@@ -25,17 +25,32 @@ because they refine the original plan:
 export const colors = {
   bg: { DEFAULT: '#fbf7f2', subtle: '#f6f0e8' },
   surface: {
-    base: '#f8f3ec', card: '#ffffff', item: '#fdf4ea',
-    code: '#211b16', hover: '#f8f1ea',
+    base: '#f8f3ec',
+    card: '#ffffff',
+    item: '#fdf4ea',
+    code: '#211b16',
+    hover: '#f8f1ea',
   },
   text: {
-    primary: '#1f1a16', secondary: '#5d554d', muted: '#6b625a', dim: '#776e65',
-    contrast: '#1f1a16', onCode: '#f3ede5',
+    primary: '#1f1a16',
+    secondary: '#5d554d',
+    muted: '#6b625a',
+    dim: '#776e65',
+    contrast: '#1f1a16',
+    onCode: '#f3ede5',
   },
   accent: {
-    DEFAULT: '#f4a261', hover: '#f29a52', active: '#e98d3f', border: '#c9691f',
-    ink: '#9c4408', soft: '#fde3cf', subtle: '#fff1e6', subtleBorder: '#f6dcc4',
-    highlight: '#ffd9b8', glow: '#ffb98a', agentBorder: '#e0a05c',
+    DEFAULT: '#f4a261',
+    hover: '#f29a52',
+    active: '#e98d3f',
+    border: '#c9691f',
+    ink: '#9c4408',
+    soft: '#fde3cf',
+    subtle: '#fff1e6',
+    subtleBorder: '#f6dcc4',
+    highlight: '#ffd9b8',
+    glow: '#ffb98a',
+    agentBorder: '#e0a05c',
   },
   border: { DEFAULT: '#e9e0d6', subtle: '#f0e9e0', card: '#e2d8cc', interactive: '#d4c7b8' },
   modes: {
@@ -44,8 +59,10 @@ export const colors = {
     classic: { border: '#e2d8cc', text: '#6b625a' },
   },
   status: {
-    successInk: '#1f6b45', successSoft: '#e3f3ea',
-    dangerInk: '#b3261e', dangerSoft: '#fde7e5',
+    successInk: '#1f6b45',
+    successSoft: '#e3f3ea',
+    dangerInk: '#b3261e',
+    dangerSoft: '#fde7e5',
   },
 } as const;
 ```
@@ -73,7 +90,7 @@ background before fixing:
    **`text-accent-ink`** (`#9c4408`, 6.07:1 on bg, 6.47:1 on card).
 2. **`text-accent` on the dark `bg-surface-code` island** (rare — e.g. a
    syntax-highlighted keyword inside a terminal block) → this one is
-   *not* broken; `#f4a261` on `#211b16` still reads fine as light-on-dark.
+   _not_ broken; `#f4a261` on `#211b16` still reads fine as light-on-dark.
    Leave these as `text-accent` (or explicitly document as intentional).
 
 Do **not** attempt a blanket repo-wide find/replace for this — it must be
@@ -94,7 +111,14 @@ action needed here.
 ## 4. `borderRadius` / `shadows` — shipped
 
 ```ts
-export const borderRadius = { none: '0px', xs: '4px', sm: '6px', md: '10px', lg: '14px', full: '9999px' } as const;
+export const borderRadius = {
+  none: '0px',
+  xs: '4px',
+  sm: '6px',
+  md: '10px',
+  lg: '14px',
+  full: '9999px',
+} as const;
 export const shadows = {
   none: 'none',
   subtle: '0 1px 0 rgba(31, 26, 22, 0.06)',
@@ -102,6 +126,7 @@ export const shadows = {
   soft: '0 8px 24px -12px rgba(31, 26, 22, 0.12)', // hero/demo/modal only
 } as const;
 ```
+
 Mapped into Tailwind as `rounded-xs/sm/md/lg` and `shadow-subtle/card/soft`.
 
 ## 5. Other hardcoded-hex locations still pending (unchanged from original plan)
