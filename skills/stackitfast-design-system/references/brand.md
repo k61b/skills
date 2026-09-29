@@ -22,7 +22,9 @@ Same mark, inverted tile — the family reads as one system at a glance.
 - Fold: 3.5-unit right triangle in a 45° cut, 0.75-unit gap (the cut is
   3.5 + 0.75·√2 ≈ 4.56 deep).
 - `BRAND_MARK.small` (16-unit grid) is a hand-snapped drawing for 16–32px:
-  every layer, seam and the fold lands on whole pixels at 16px. Use it for
+  block 2→14, centred, with every layer, seam and the fold on whole pixels at
+  16px. Its layers are 3/4/3 (a slightly heavier spine, as in type) because
+  12px can't split into three equal layers with 1px seams. Use it for
   favicons and `BrandMark size="sm"`; the master turns to mush below ~24px.
 
 ## Wordmark
