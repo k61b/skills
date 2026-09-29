@@ -14,18 +14,18 @@ It sits on a rounded tile. Source of truth for geometry and colours:
 
 Same mark, inverted tile — the family reads as one system at a glance.
 
-## Construction (32-unit grid, `BRAND_MARK.master`)
+## Construction (32-unit grid, `BRAND_MARK`)
 
 - Tile 32×32, radius 7. Block 5→27 (22 units, ~69% of the tile), centred.
 - Three layers of 6 with two 2-unit seams (y 11–13, 19–21). The top seam is
   open to the right, the bottom one to the left, leaving 5-unit bridges — the S.
 - Fold: 3.5-unit right triangle in a 45° cut, 0.75-unit gap (the cut is
   3.5 + 0.75·√2 ≈ 4.56 deep).
-- `BRAND_MARK.small` (16-unit grid) is a hand-snapped drawing for 16–32px:
-  block 2→14, centred, with every layer, seam and the fold on whole pixels at
-  16px. Its layers are 3/4/3 (a slightly heavier spine, as in type) because
-  12px can't split into three equal layers with 1px seams. Use it for
-  favicons and `BrandMark size="sm"`; the master turns to mush below ~24px.
+- One drawing at every size — the favicon is the logo's tile, nothing
+  redrawn. Every edge lands on a whole pixel at 32px (a retina 16px tab); at
+  1x 16px the edges soften slightly. A separate pixel-snapped 16px drawing was
+  tried and dropped: its proportions (3/4/3 layers, bigger block) visibly
+  differed from the logo.
 
 ## Wordmark
 
@@ -42,7 +42,7 @@ Same mark, inverted tile — the family reads as one system at a glance.
 - Wordmark ink height (ascender→baseline) = **0.55 × tile**, centred on the
   tile; gap = **0.3 × tile**. Tiles 16/20/24px pair with `text-sm/md/lg`.
 - Clear space around the lockup: one layer height (~0.2 × tile) minimum.
-- Minimum size: 16px tile (small drawing). Below that use the one-colour
+- Minimum size: 16px tile. Below that use the one-colour
   `safari-pinned-tab.svg` silhouette or nothing.
 
 ## Backgrounds
@@ -63,15 +63,14 @@ Same mark, inverted tile — the family reads as one system at a glance.
 ## Assets & commands
 
 - `bun run --cwd apps/web brand:export` / `--cwd apps/stackitfirst` →
-  `favicon.svg` (small drawing), `logo.svg`, favicon PNGs (≤32px small,
-  larger master), `favicon.ico` (16/32/48), full-bleed `apple-touch-icon.png`,
+  `favicon.svg`, `logo.svg`, favicon PNGs, `favicon.ico` (16/32/48), full-bleed `apple-touch-icon.png`,
   `icon-maskable-512.png` (80% safe zone), `safari-pinned-tab.svg`,
   `site.webmanifest`.
 - `bun run --cwd apps/web brand:og` → `og-preview/explore/rules/insights.png`
   (headless Chrome). `apps/stackitfirst`: `brand:og` → `og.png`.
 - Dynamic per-project OG (`apps/web/src/lib/ogImage.ts`) draws the same lockup
   with resvg.
-- README badge (`apps/web/src/pages/badge/[slug].svg.ts`) carries the 14px
-  small drawing in its left segment.
+- README badge (`apps/web/src/pages/badge/[slug].svg.ts`) carries the mark at 14px
+  in its left segment.
 - Concept history and test sheets were produced with the `logo-design` skill
   (`.claude/skills/logo-design`).
