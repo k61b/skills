@@ -31,6 +31,9 @@ const TOKENS = {
   successSoft: '#e3f3ea',
   dangerInk: '#b3261e',
   dangerSoft: '#fde7e5',
+  surfaceBase: '#f8f3ec',
+  accentSubtle: '#fff1e6',
+  accentSubtleBorder: '#f6dcc4',
 };
 
 // [fg, bg, minRatio, label]
@@ -49,6 +52,16 @@ const PAIRS = [
   ['accentBorder', 'bg', 3, 'accent border (UI) on bg'],
   ['successInk', 'successSoft', 4.5, 'success ink on success soft'],
   ['dangerInk', 'dangerSoft', 4.5, 'danger ink on danger soft'],
+  // Editor v2 (2026-09): CodeMirror marks and selection, inline code, diff lines,
+  // diagram builder chips.
+  ['textDim', 'surfaceCard', 4.5, 'markdown syntax marks in the editor'],
+  ['accentInk', 'surfaceCard', 4.5, 'code and links in the editor'],
+  ['accentInk', 'surfaceItem', 4.5, 'inline code on its tint'],
+  ['textSecondary', 'accentSubtleBorder', 4.5, 'selected text in the editor'],
+  ['textPrimary', 'accentSubtle', 4.5, 'selected diagram component'],
+  ['textMuted', 'surfaceBase', 4.5, 'muted labels on base surface'],
+  ['successInk', 'successSoft', 4.5, 'added line in a diff'],
+  ['dangerInk', 'dangerSoft', 4.5, 'removed line in a diff'],
 ];
 
 function hexToRgb(hex) {
