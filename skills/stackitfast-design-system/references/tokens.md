@@ -136,9 +136,6 @@ Mapped into Tailwind as `rounded-xs/sm/md/lg` and `shadow-subtle/card/soft`.
 - `apps/web/src/components/RuleViewerInteractive.tsx` — 11.
 - `apps/web/src/components/ProjectDetailInteractive.tsx` — 8.
 - `apps/web/src/pages/project/[slug].astro` — 6.
-- `apps/web/src/components/BrandMark.tsx` — 4 hex in inline SVG fills.
-- `apps/web/src/lib/seo.ts:11` — `themeColor: '#0e0e0f'` → `'#fbf7f2'`.
-- Static OG PNGs + `public/favicon.svg` / `public/logo.svg` — manual re-export.
 - `packages/ui/src/components/Button/Button.tsx` `social` variant — hardcodes
   `#f2f0ec`/`#141416`/`#d6d1c7` — retokenize when Button is migrated.
 

@@ -88,16 +88,9 @@ read fine against `#0d0e10`). The fix throughout was:
 
 ## Explicitly NOT done (needs manual/tooling follow-up)
 
-- The 5 static OG preview PNGs (`og.png`, `og-preview.png`, `og-explore.png`,
-  `og-insights.png`, `og-rules.png`) and the 6 raster favicon PNGs
-  (32/48/96/192/512 + apple-touch-icon) still show the old dark-amber
-  branding. No SVG rasterizer (`rsvg-convert`/`imagemagick`/`sharp`) was
-  available in the working environment to regenerate them from the
-  now-updated `favicon.svg`/`logo.svg`, and installing one as a new
-  project dependency for a one-off export wasn't warranted. Regenerate
-  these from the current `apps/web/public/favicon.svg` /
-  `apps/web/public/logo.svg` with any design tool, then re-export the OG
-  images with the new palette.
+- ~~Static OG previews and raster favicons~~ — done with the brand refresh:
+  they are now generated (`brand:export`, `brand:og`); see
+  [brand.md](brand.md). The unused `og.png` duplicate was removed.
 - The homepage's 4-tile category grid (pattern #6, asymmetric bento) was
   left as a uniform grid — only retokenized, not restructured.
 

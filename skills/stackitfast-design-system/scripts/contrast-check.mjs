@@ -62,6 +62,10 @@ const PAIRS = [
   ['textMuted', 'surfaceBase', 4.5, 'muted labels on base surface'],
   ['successInk', 'successSoft', 4.5, 'added line in a diff'],
   ['dangerInk', 'dangerSoft', 4.5, 'removed line in a diff'],
+  // Brand mark (references/brand.md): the carved block must read on its tile.
+  ['textPrimary', 'accent', 3, 'brand: ink block on apricot tile'],
+  ['bg', 'textPrimary', 3, 'brand: cream block on ink tile (Stack It First)'],
+  ['accentInk', 'bg', 4.5, 'brand: wordmark second word on bg'],
 ];
 
 function hexToRgb(hex) {

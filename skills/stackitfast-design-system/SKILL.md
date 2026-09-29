@@ -87,6 +87,13 @@ disclosure block, trust strip, FAQ accordion, blueprint corner marks,
 pastel-topped + dashed placeholder cards, segmented control) with Astro/
 Tailwind markup sketches: [references/patterns.md](references/patterns.md).
 
+## Brand mark
+
+The "Stack File" mark (S carved in three layers, folded file corner, on an
+apricot tile) and the lowercase `stackitfast` wordmark: construction, lockup,
+clear space, backgrounds and misuse in [references/brand.md](references/brand.md).
+Geometry lives in `packages/ui/src/brand.ts` — never redraw the mark.
+
 ## Motion
 
 One orchestrated hero reveal (staggered `animation-delay`) per page, plus
