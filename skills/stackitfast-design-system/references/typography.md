@@ -1,90 +1,51 @@
-# Typography — Manrope + IBM Plex Mono
+# Typography
 
-## Google Fonts declaration
+**Manrope** (400–800) for everything; **IBM Plex Mono** (400–600) only for
+code, file names, versions, counts and commands. Loaded once in each app's
+`Layout.astro` from Google Fonts.
 
-`apps/web/src/layouts/Layout.astro` (currently lines ~90-96) loads IBM Plex
-Sans + IBM Plex Mono via a single Google Fonts `<link>`. Replace with:
+## Scale (tokens.ts `fontSizes`)
 
-```html
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-  rel="stylesheet"
-/>
-```
+| Class                   | Size            | Use                                               |
+| ----------------------- | --------------- | ------------------------------------------------- |
+| `text-display`          | 64 / 1.02 / −4% | homepage hero (use `sm:text-display`, 44px below) |
+| `text-hero`             | 54 / 1.05 / −3% | listing and legal H1 banners (`sm:text-hero`)     |
+| `text-4xl`              | 44 / −3.5%      | page heroes, big section heads                    |
+| `text-3xl`              | 38              | page titles                                       |
+| `text-2xl`              | 32              | section heads                                     |
+| `text-xl`               | 21              | card titles (tool cards, features)                |
+| `text-lg`               | 18              | lead paragraphs, card titles on paper             |
+| `text-body` / `text-md` | 16 / 15         | body                                              |
+| `text-base`             | 14              | UI text, labels, menu items                       |
+| `text-sm`               | 12              | meta, captions                                    |
+| `text-2xs`              | 11              | dense data rows                                   |
 
-Drop IBM Plex Sans entirely (Manrope replaces it); keep IBM Plex Mono at a
-trimmed weight set (400/500/600 — the app never uses 700 mono).
+`text-xs` (10px) is too small for UI copy and design-lint flags it;
+`text-2xs-mono` and `text-sm-mono` are legacy.
+Never write `text-[13px]`; pick the nearest step.
 
-## `packages/ui/src/tokens.ts` — `fonts`
+## Headings
 
-```ts
-export const fonts = {
-  sans: [
-    'Manrope',
-    'system-ui',
-    '-apple-system',
-    'BlinkMacSystemFont',
-    'Segoe UI',
-    'Roboto',
-    'sans-serif',
-  ],
-  mono: [
-    'IBM Plex Mono',
-    'ui-monospace',
-    'SFMono-Regular',
-    'Menlo',
-    'Monaco',
-    'Consolas',
-    'monospace',
-  ],
-  sansString:
-    "'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-  monoString: "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-} as const;
-```
+- Weight 800 for display and page heroes, 700 for section and card titles.
+- Tracking: `tracking-[-0.04em]` display, `-0.035em` heroes, `-0.025em`
+  titles, `-0.02em` card titles.
+- **Sentence case** everywhere. The product name in copy is "STACK IT FAST";
+  the lowercase wordmark belongs to the logo only.
+- One **emphasis** word or phrase per headline, in `text-accent` on ink or
+  `text-accent-ink` on paper: "Pick a stack that **already works.**"
 
-Mirror the family name change in `packages/ui/src/styles/globals.css`
-(`--font-sans`, `--font-mono` — same three places noted in the exploration:
-tokens.ts, globals.css, and the Google Fonts link are the only three spots).
+## Labels (replaces eyebrows)
 
-## Type scale (`fontSizes` in `tokens.ts`)
+`<Label>` = square apricot `<Marker>` + 14px semibold sentence-case text.
+One per section at most. Never mono, never uppercase, never tracked out.
 
-The current scale tops out at 46px hero / 14.5px body, tuned for a dense
-dev-tool UI. For a minimal, airy pastel feel, raise body size and hero size:
+## Body
 
-```ts
-export const fontSizes = {
-  xs: ['10px', { lineHeight: '14px', letterSpacing: '0.06em' }],
-  '2xs-mono': ['10.5px', { lineHeight: '14px', letterSpacing: '0.07em' }],
-  sm: ['12px', { lineHeight: '17px', letterSpacing: '0.02em' }],
-  'sm-mono': ['12px', { lineHeight: '16px', letterSpacing: '0.04em' }],
-  base: ['14px', { lineHeight: '1.55' }],
-  md: ['15px', { lineHeight: '1.6' }],
-  body: ['16px', { lineHeight: '1.6', letterSpacing: '-0.005em' }],
-  lg: ['18px', { lineHeight: '1.45', letterSpacing: '-0.01em' }],
-  xl: ['21px', { lineHeight: '1.35' }],
-  '2xl': ['32px', { lineHeight: '1.15', letterSpacing: '-0.02em' }],
-  '3xl': ['38px', { lineHeight: '1.12', letterSpacing: '-0.025em' }],
-  hero: ['54px', { lineHeight: '1.05', letterSpacing: '-0.03em' }],
-} as const;
-```
+16px, line-height 1.6, `text-on-ink-secondary` on ink or
+`text-text-secondary` on paper. Keep lines under ~70 characters
+(`max-w-prose` or `max-w-[520px]` for hero leads).
 
-Mono sizes (`xs`, `2xs-mono`, `sm-mono`) keep their tight tracking — they're
-still used for badges/eyebrows/tags. Sans sizes (`base` upward) get looser,
-larger, more readable settings appropriate to Manrope.
+## Mono
 
-## Usage rules
-
-- Mono (`font-mono`) stays reserved for: eyebrows (one per section, max),
-  stat numerals, tech/stack tags, code, timestamps. Never for headings or
-  body copy.
-- Headings use Manrope 700–800. Body copy uses Manrope 400–500.
-- Drop the reflexive `uppercase tracking-widest` on every mono label — only
-  true section eyebrows get it; inline tags (tech chips, mode badges) stay
-  normal case or small-caps-style without the wide tracking.
-- Emphasis word in headlines (pattern #1): use `font-mono` italic or a CSS
-  underline/marker highlight (`background: linear-gradient` clipped to text
-  baseline using `accent.highlight`) instead of bolding — bold-everywhere
-  headlines read as templated.
+For literal things only: `AGENTS.md`, `v0.3.0`, `116`, `$ npx skills add
+k61b/skills`, commit hashes. Not for labels, buttons, nav or descriptions.

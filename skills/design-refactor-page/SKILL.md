@@ -1,79 +1,61 @@
 ---
 name: design-refactor-page
-description: Refactor a single UI file (Astro page, React component, or Tailwind config) from the old dark amber dev-tool aesthetic to the new pastel/minimal design system, then verify with typecheck, contrast check, and a design-guidelines audit. Use when asked to "refactor this file to the new design", "apply the pastel redesign to X", or as the execution step after the stackitfast-design-system skill.
+description: Migrate a single UI file (Astro page, React component or layout) to the STACK IT FAST "Stack File · Character" design language — ink shell or paper panel, @stackitfast/ui components, Stacky and stickers where they have a role — then verify with typecheck, design-lint, contrast and screenshots at 1440px and 390px. Use when asked to "migrate this page to the new design", "apply the character redesign to X", or as the per-file step of the rollout.
 disable-model-invocation: true
 license: MIT
 ---
 
-Refactor **$ARGUMENTS** (a file path relative to the repo root) to the
-STACK IT FAST pastel/minimal design system, then verify the result.
+Migrate **$ARGUMENTS** (a file path relative to the repo root) to the Stack
+File · Character language, then verify it. Visual only: props, data fetching,
+routes, aria semantics and copy meaning stay as they are (copy casing and
+tone may change per voice.md).
 
 ## Steps
 
-1. **Load the design system.** Read
-   `.claude/skills/stackitfast-design-system/SKILL.md` and whichever
-   `references/*.md` are relevant to this file (tokens.md for any color
-   work, typography.md for text/font work, components.md if the target is
-   inside `packages/ui/src/components`, patterns.md if the target is a page
-   section, migration-map.md to confirm this file's place in the overall
-   order — flag it to the user if a prerequisite step upstream hasn't been
-   done yet, e.g. refactoring `index.astro` before `tokens.ts` exists).
+1. **Load the language.** Read `.claude/skills/stackitfast-design-system/SKILL.md`
+   and the references this file needs: `surfaces.md` (always), `components.md`,
+   `patterns.md` for page sections, `typography.md`, `voice.md`, `tokens.md`
+   for any colour work. Check `rollout.md` for the file's phase; flag it if a
+   prerequisite (e.g. a component) is missing.
 
-2. **Inventory before editing.** Read the target file in full. Grep it for:
-   - raw hex colors (`#[0-9a-fA-F]{3,8}`)
-   - Tailwind default palette classes (`bg-zinc-`, `text-emerald-`,
-     `border-red-`, etc. — anything not `bg-surface-*`/`text-text-*`/
-     `bg-accent*`/`border-border*`/`border-accent*`)
-   - old radius/shadow values (`rounded-[4px]`, `shadow-lg`, `shadow-2xl`)
-   - `ICON_STROKE_WIDTH` overrides or inline SVG stroke attributes
-     List every match found before making any change, so nothing is missed
-     silently.
+2. **Inventory before editing.**
+   `node .claude/skills/stackitfast-design-system/scripts/design-lint.mjs $ARGUMENTS`
+   and read the file in full. List every finding plus the page's sections,
+   so nothing is changed silently.
 
-3. **Apply the refactor.** Replace each hardcoded value with the matching
-   design-system token utility. Apply relevant layout patterns from
-   patterns.md where the file is a page section. **Preserve all behavior**:
-   props, TypeScript interfaces, data-fetching (`getLiveProjects`, Astro
-   content collections, etc.), event handlers, accessibility attributes
-   (aria-*, roles) — this is a visual-only refactor. If the file contains
-   business logic, do not touch it beyond what's needed to reach class
-   names or inline styles.
+3. **Decide surfaces.** For each section: ink or paper (surfaces.md decision
+   list), which pattern it becomes, whether Stacky or a sticker has a real
+   role (empty, loading, success, 404, section head) — at most one Stacky per
+   view.
 
-4. **Typecheck.** Run the check for whichever package the file lives in:
-   - `apps/web/**` → `cd apps/web && bunx astro check` (`.astro` files) or
-     `bunx tsc --noEmit` (`.ts`/`.tsx`)
-   - `packages/ui/**` → `cd packages/ui && bunx tsc --noEmit`
-     Fix any type errors introduced by the refactor before continuing.
+4. **Rebuild with the package.** Replace hand-rolled markup with
+   `@stackitfast/ui` components: `Label` for eyebrows, `Marker` for dots,
+   `Button` variants, `Chip`, `IconTile`, `OptionTile`, `Segmented`,
+   `ToolCard`, `FileCard`, `CodeWindow`, `Card variant="ink|paper"`,
+   illustrations from `@stackitfast/ui/illustrations`. Use tokens for every
+   colour, radius, size and shadow. Sentence-case the UI strings. If a
+   component is missing, add it to `packages/ui` rather than inlining it.
 
-5. **Contrast check.** Run
-   `bun .claude/skills/stackitfast-design-system/scripts/contrast-check.mjs`.
-   It checks the fixed token table, not file-specific colors — if this file
-   introduces a _new_ color pair not in that table, add it to the `PAIRS`
-   array temporarily (or manually verify with the same formula) before
-   declaring the refactor done.
+5. **Typecheck.** `bun run --cwd apps/web check` (or `apps/stackitfirst`,
+   or `bun run --cwd packages/ui build`).
 
-6. **Design guidelines audit.** Invoke the `web-design-guidelines` skill
-   (Vercel) against the diff for this file — accessibility, focus states,
-   typography, motion, and anti-pattern rules.
+6. **Lint and contrast.** Re-run design-lint on the file: zero findings, or
+   each remaining one allow-listed with a reason. Run
+   `bun .claude/skills/stackitfast-design-system/scripts/contrast-check.mjs --tokens packages/ui/src/tokens.ts`
+   and add any new colour pair to its `PAIRS`.
 
-7. **Visual check.** If the `run` skill is available for this project, use
-   it to view the page containing this component at both a desktop
-   (~1280px) and mobile (~390px) viewport width and take a screenshot.
-   Skip this step for files with no visual surface of their own (e.g. a
-   pure data/lib file — refuse to run this skill on such a file at all,
-   since it has nothing to refactor).
+7. **Audit.** Run the `web-design-guidelines` skill on the diff; fix what it
+   finds (focus states, labels, touch targets).
 
-8. **Report.** Summarize: what was replaced (old value → new token, as a
-   short table), typecheck result, contrast check result, guidelines audit
-   findings (if any), and screenshot observations. Do not modify
-   `.agents/rules/*`, database/query code, or any file outside the single
-   target path without calling that out explicitly first.
+8. **Look at it.** Start the dev server and screenshot the page at 1440px and
+   at a real 390px mobile viewport (Chrome DevTools Protocol device metrics;
+   `--screenshot` alone mis-renders long pages and clamps width to 500px).
+   Check both, including hover and focus on the primary CTA.
+
+9. **Report**: sections → surface and pattern chosen, findings before/after,
+   checks run with results, screenshots taken, anything deferred.
 
 ## Out of scope
 
-- Do not run this skill against `.agents/rules/`, `packages/db/`, or any
-  `api/*` route — those are not visual surfaces.
-- Do not regenerate raster assets (OG images, favicons) — flag them for
-  manual re-export instead, per migration-map.md §11.
-- Do not add a dark theme, theme toggle, or second color hue family — the
-  design system is light-pastel/single-hue only (see SKILL.md identity
-  section).
+Database, API routes, `.agents/rules`, raster assets (use the
+`stackitfast-brand` pipeline), dark-mode toggles, new hues.

@@ -1,172 +1,82 @@
-# Layout patterns
+# Patterns
 
-Thirteen reusable structural patterns distilled from reference research
-(seenpaid, riffleboard, Cal.com, ChatSEO, Brutal Pages). Each entry: what it
-is, where to use it on this site, and a markup sketch using only token
-utilities (`bg-*`, `text-*`, `border-*`, `shadow-*`, `rounded-*` from the new
-scale — never raw Tailwind defaults or hex).
+Reference implementation: the homepage, `apps/web/src/pages/index.astro` (the
+first concept is kept at `packages/ui/preview/HomeCharacter.tsx`, `#character`).
+Pick the patterns a page needs; never repeat one layout twice on a page.
 
-Do not use every pattern on every page. Pick 3–5 per page; repeating all 13
-everywhere is itself a template tell.
+## 1. Hero picker (product in the hero)
 
-## 1. Mono eyebrow + headline with one emphasized word
+Ink. Left: headline with one apricot emphasis phrase, a 2–3 line lead, three
+short proof bullets with Markers. Right: a raised panel (`bg-ink-raised`,
+`rounded-panel`, `shadow-lift`) with the survey's first question as
+`OptionTile`s, team size as `Segmented`, one full-width primary CTA and a
+one-line hint. Stacky (wink) peeks over the panel's top-right corner.
 
-```html
-<div
-  class="font-mono text-2xs-mono uppercase tracking-widest text-accent-ink flex items-center gap-2"
->
-  <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
-  <span>Real-world stack decisions</span>
-</div>
-<h1 class="text-3xl sm:text-4xl lg:text-hero font-bold text-text-primary tracking-tight">
-  Choose your stack based on
-  <span class="relative inline-block">
-    <span class="relative z-10">real projects</span>
-    <span class="absolute inset-x-0 bottom-1 h-3 bg-accent-highlight -z-0"></span> </span
-  >, not guesswork.
-</h1>
-```
+## 2. Section head with Stacky
 
-Use for: hero H1 on `index.astro`, and top-of-page H1 banners on `/explore`,
-`/rules`, `/insights` (replace the current pulsing-dot eyebrow banner from
-`.agents/rules/design-system.md`'s old "Explore standard").
+A small Stacky (≈72px, default pose) left of an `h2` (30px, 800) and a
+one-line description. Use for the first section after the hero only.
 
-## 2. Pill nav with mono badge
+## 3. Tool cards (three ways in)
 
-```html
-<a
-  href="/rules"
-  class="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary"
->
-  Rules & Skills
-  <span class="font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-accent-soft text-accent-ink"
-    >NEW</span
-  >
-</a>
-```
+`ToolCard` bento: one `feature` card spanning two rows + two regular cards
+(`lg:grid-cols-2 lg:grid-rows-2`), or three equal cards. Each has a sticker,
+a title, one sentence, a **spec line** (see 5) and one CTA.
 
-Use for: `HeaderNav.tsx` items that need a status flag (new insights report,
-free tools).
+## 4. Share fan
 
-## 3. Browser-chrome demo card
+Five real stack cards (server PNGs from `/card/s/<code>.png?format=post&w=480`)
+fanned (`apps/web/src/components/home/CardFan.astro`), the primary card in
+front and upright, beside an ink-raised panel with an input
+("github.com/you/repo") and a primary CTA. Explain what is read and what is
+saved in a hint line. Thumbnails use `?w=480`; full-size pages add a `srcset`.
 
-```html
-<div class="rounded-lg border border-border-card bg-surface-card shadow-soft overflow-hidden">
-  <div class="flex items-center justify-between px-4 py-2.5 border-b border-border bg-surface-base">
-    <div class="flex items-center gap-2 font-mono text-xs text-text-muted">
-      <span class="w-2.5 h-2.5 rounded-full bg-border-interactive"></span>
-      stackitfast.com/explore
-    </div>
-    <span class="font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-accent-subtle text-accent-ink"
-      >SAMPLE DATA</span
-    >
-  </div>
-  <div class="p-4"><!-- live content --></div>
-</div>
-```
+## 5. Spec line
 
-Use for: hero right-column "featured architectures" card (replaces the
-current plain `cardVariants` list).
+Under a tool or card: concrete limits and outputs, with the numbers bold —
+"**16 questions** · about 2 minutes. Gives you **a stack, a diagram and a
+prompt**." Never marketing adjectives.
 
-## 4. Handwritten annotation arrow
+## 6. Honesty table
 
-SVG hand-drawn arrow + rotated `font-mono italic` caption pointing at one
-interactive element. Max one per page — use it to point at the primary CTA
-or the demo card, never decoratively.
+A cream (paper) section: left, an `h2` ("How a stack gets in") and two short
+paragraphs; right, a ruled list of rows — label, one-line explanation, and a
+big number read from the database (architectures, technologies, rule sets,
+categories, licence).
 
-## 5. Numbered step cards
+## 7. Ink band
 
-```html
-<div class="grid sm:grid-cols-3 gap-6">
-  <div class="rounded-md border border-border-card bg-surface-card p-6">
-    <span class="font-mono text-xs text-text-dim">01</span>
-    <h3 class="mt-3 font-semibold text-text-primary">Connect your stack</h3>
-    <p class="mt-1.5 text-sm text-text-secondary">...</p>
-  </div>
-  <!-- 02, 03 -->
-</div>
-```
+A full-width ink panel (`rounded-panel` inside the content column, or
+full-bleed) with a Label, a strong line and one CTA — optionally a code
+window on the right and one warm radial light in a corner.
 
-Use for: "How it works" section on `index.astro`.
+## 8. Code window
 
-## 6. Bento icon tiles
+The real file (AGENTS.md, stack.mdc, SKILL.md, CLAUDE.md) in an `ink-deep`
+panel: `rounded-panel border border-on-ink-line`, a file-name bar, mono text
+in `text-on-ink` (`text-sticker-peach` for inline code) and a
+`CopyButton variant="outline-ink"`. The apps build it this way
+(project prompt, results, rule viewer); `CodeWindow` adds tabs and line numbers
+for a gallery-grade version. Pair with a two-column grid of the formats and
+which agent reads each.
 
-Asymmetric grid (one 2x1 tile + several 1x1 tiles) of `IconCircle` + label +
-one-line description. Use for "Browse by category" — replace the current
-uniform 4-tile grid with one taller/wider anchor tile.
+## 9. File card grid
 
-## 7. Big-numeral stats trio
+Rules, skills and reports as `FileCard`s (2–3 columns): mono file name, title,
+one line, format chips (`Chip mono`). The fold grows on hover.
 
-Already exists in the hero stats row — restyle only: numerals get `font-mono
-text-2xl text-text-primary font-bold`, labels get `text-2xs-mono
-text-text-muted` without forced uppercase tracking-widest on every one.
+## 10. Three stats
 
-## 8. Honesty disclosure block
+Three (or four) big Manrope 800 numbers with a one-line label each, separated
+by left borders. Numbers come from data, not copy.
 
-```html
-<div class="rounded-md border border-border-card bg-surface-item p-5 flex gap-3">
-  <InfoIcon class="shrink-0 text-accent-ink" />
-  <div class="text-sm text-text-secondary space-y-1">
-    <p><strong class="text-text-primary">X posts</strong> through your own X API key...</p>
-  </div>
-</div>
-```
+## 11. Empty, loading, done, lost
 
-Use for: a "How verification works" block near `/explore` or `/project/[slug]`.
+`EmptyState`-style block with Stacky: `think` while waiting or empty search,
+`celebrate` on success (published, card made), `sleep` for 404 and
+"nothing here yet", `wave` for sign-in prompts. One sentence and one action.
 
-## 9. Trust strip
+## 12. SEO footer
 
-Grayscale-to-color-on-hover logo row, or avatar cluster + star rating for
-testimonials. Use for the existing "Featured on" strip — restyle logos to
-sit on `bg-subtle` with `opacity-60 hover:opacity-100`.
-
-## 10. FAQ accordion
-
-Use the existing `Tabs`/disclosure primitives; each item: hairline
-`border-b border-border`, `+`/`−` glyph (no emoji), `font-semibold
-text-text-primary` question, `text-text-secondary` answer. Add to
-`index.astro` bottom and to `/rules` and `/insights` templates.
-
-## 11. Blueprint corner marks
-
-Keep the existing bottom-banner blueprint grid + crosshair corner marks
-concept, restyled: grid lines `border-border-subtle`, crosshairs
-`text-border-interactive`, on an `bg-subtle` background instead of the dark
-"blueprint" backdrop.
-
-## 12. Pastel-topped + dashed placeholder cards
-
-```html
-<div
-  class="rounded-md border border-dashed border-border-interactive bg-surface-base p-5 flex flex-col items-center justify-center text-center gap-2"
->
-  <span class="font-mono text-[10px] uppercase tracking-widest text-text-dim">Free place</span>
-  <span class="text-sm text-text-muted">Your stack here</span>
-</div>
-```
-
-Use for: empty/placeholder slots in `/explore` and `/stack` listings when a
-category has few entries — invites submission instead of looking broken.
-
-## 13. Segmented control
-
-```html
-<div class="inline-flex rounded-full border border-border-card bg-surface-card p-1">
-  <button class="rounded-full px-4 py-1.5 text-xs font-semibold bg-accent text-text-primary">
-    Agent
-  </button>
-  <button
-    class="rounded-full px-4 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary"
-  >
-    Hybrid
-  </button>
-  <button
-    class="rounded-full px-4 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary"
-  >
-    Classic
-  </button>
-</div>
-```
-
-Use for: dev-mode filter control on `/explore` (agent / hybrid / classic),
-replacing the current plain filter chips.
+Ink footer with lockup, one-line promise, newsletter, and link columns
+(Product · Popular stacks · Categories · Family). Only link pages that exist.

@@ -1,128 +1,81 @@
-# Component variant map — implemented (step 3/11)
+# Components — `@stackitfast/ui`
 
-Actual shipped state of every `packages/ui/src/components` file after the
-pastel retokenization. All prop shapes/variant names are unchanged (no
-call-site breaks) except two new Card variants that are additive.
+Import from `@stackitfast/ui` (components, icons, tokens) and
+`@stackitfast/ui/illustrations` (Stacky, stickers). Live review: preview
+`#gallery`. Apps never re-create these; extend the package instead.
 
-## Button (`Button/Button.tsx`)
+## Brand
 
-- Base radius: `rounded-md` (10px); `xs`/`sm`/icon-xs/icon-sm sizes override
-  to `rounded-sm` (6px) so small controls don't look pill-like.
-- Focus ring: `ring-accent` → **`ring-accent-border`** (accent.DEFAULT fails
-  the 3:1 non-text contrast requirement as a ring color; accent.border
-  passes at 3.56:1).
-- `primary`: unchanged structurally — `bg-accent text-text-contrast
-border-accent-border` (text.contrast === text.primary ink now, 8.37:1).
-- `surface` / `surface-item`: hover text-accent → **hover:text-accent-ink**;
-  hover border-accent/60 → **hover:border-accent-border/60**.
-- `accent-subtle`: border-accent → **border-accent-border**; text-accent →
-  **text-accent-ink**; hover bg-accent/20 → **hover:bg-accent-soft**.
-- `danger`: raw `red-500` Tailwind defaults → **`status-dangerInk` /
-  `status-dangerSoft`** tokens.
-- `social`: hardcoded `#f2f0ec`/`#141416`/`#d6d1c7` → **`bg-surface-card
-text-text-primary border-border-card`** (surface.card is already white,
-  so this converges naturally with the rest of the light theme).
+| Component     | Props                                                   | Notes                                                                               |
+| ------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `BrandMark`   | `brand` fast/first · `size` sm/md/lg/xl or px · `onInk` | The tile. FIRST on ink gets a faint edge.                                           |
+| `BrandLockup` | same + `onInk`                                          | Tile + lowercase wordmark, sr-only product name. Apps wrap it as `BrandLogo.astro`. |
 
-## Badge
+## Actions
 
-- `outline`: hardcoded `text-[#cbc8c2]` → **`text-text-secondary`**.
-- `subtle`: `text-accent` (on `bg-accent-subtle`, a light tint) →
-  **`text-accent-ink`**.
-- `accent`: `border-accent/40 bg-accent/15 text-accent` →
-  **`border-accent-border/40 bg-accent-soft text-accent-ink`**.
-- `agent`/`hybrid`/`classic`: hardcoded dark-theme hex borders/text →
-  **`border-modes-{name}-border text-modes-{name}-text`**, now that
-  `colors.modes` is actually mapped into the Tailwind config (it existed in
-  the old tokens.ts but was never wired up).
+**`Button`** (`buttonVariants` for links): variants `primary` (apricot, ink
+text, one per view) · `ink` (on paper) · `cream` (on ink) · `outline-ink` ·
+`ghost-ink` · `outline` (secondary on paper) · `ghost` (quiet on paper) ·
+`danger` (filled, destructive confirms only).
+Sizes `xs` `sm` `md` `lg` `xl` + `icon-*`. Always sans. Hover lifts 2px (not
+under reduced motion). A single icon always renders on the right.
+`CopyButton` takes the same variants (`outline-ink` inside code windows).
 
-## Card
+## Character primitives
 
-- Base radius `rounded-xs` (was 2px) → **`rounded-md`** (10px).
-- `default`/`option`: `border-border/50` (a near-invisible 50%-opacity
-  hairline on the old dark bg) → **`border-border-card`** (full opacity —
-  the light-theme border tokens are already soft enough without needing
-  transparency tricks); shadow `shadow-subtle` → **`shadow-card`**.
-- **New** `demo` variant: `rounded-lg border-border-card bg-surface-card
-shadow-soft overflow-hidden` — for the browser-chrome hero/demo card
-  (pattern #3). No `CardDemoHeader` sub-component yet — add it
-  co-located with its first real usage (homepage hero, step 5) rather than
-  speculatively now.
-- **New** `placeholder-dashed` variant: `border-dashed
-border-border-interactive bg-surface-base shadow-none` — for pattern #12
-  (empty/submit-yours slots in listings).
+| Component    | Use                                                                                     |
+| ------------ | --------------------------------------------------------------------------------------- |
+| `Marker`     | 6px square; `tone` accent/ink/cream. Replaces every dot.                                |
+| `Label`      | Marker + sentence-case text; `onInk`. Replaces eyebrows.                                |
+| `Chip`       | `tone` paper/ink/accent/soft/on-ink/on-ink-accent · `size` sm/md · `mono` for data.     |
+| `IconTile`   | 22% tile around an icon; `tone` soft/accent/ink/on-ink · `size`.                        |
+| `OptionTile` | A picker choice (hero, survey): icon, label, hint, `selected`, `onInk`. `aria-pressed`. |
+| `Segmented`  | Radio group with arrow-key navigation; `onInk`. For team size, filters, New/Top.        |
 
-## Tabs
+## Product moments
 
-- `boxed` variant: hardcoded `bg-[#0b0b0c]` (dark terminal bg) + `rounded-
-[6px]` → **`bg-surface-card border-border-card rounded-full`** — this is
-  now literally the segmented-control look from pattern #13, reusing the
-  existing `boxed` variant name rather than adding a redundant `segmented`
-  one.
-- `Tab` sub-component: boxed active variant `surface-item` → **`primary`**
-  (accent-filled pill, matching pattern #13's active state); boxed tabs
-  also get a `rounded-full` className override so individual tab buttons
-  match the pill container instead of Button's default `rounded-md`.
+| Component    | Use                                                                                                                                                                                                   |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ToolCard`   | Illustration well + title + body + `spec` line + `action`. `feature` = big (two rows in a bento).                                                                                                     |
+| `CodeWindow` | Tabs (active tab folded), line numbers, markdown colouring for AGENTS.md-style files. `onTabChange`, `actions`. Not used by the apps yet: their code windows are `ink-deep` panels (see patterns.md). |
+| `FileCard`   | Anything that is a file: mono file name, title, body, footer chips; folded corner that grows on hover. `onInk`.                                                                                       |
+| `ShareCard`  | DOM mock of a stack card, for the gallery only. Real cards are PNGs from `/card/s/…` and `/card/r/…` (lib/stackCard.ts).                                                                              |
 
-## IconCircle
+## Surfaces and feedback
 
-No changes needed — already fully tokenized (`border-border bg-surface-item
-text-text-muted`), retokenizes automatically.
+- **`Card`** — `paper-raised` (default) · `paper` · `ink` · `well` · `demo` ·
+  `placeholder-dashed`. `padding` sm/md/lg.
+- **`Modal`** — ink scrim (`bg-ink/60` + blur), pop-in, focus trap, sheet on
+  mobile; portals to `<body>` (the header's blur would clip it) and puts
+  `role="dialog"` on the panel, so pass `aria-labelledby`.
+- **`Alert`** — `info` · `warning` · `success` · `error`, sans text.
+- **`Input` / `Textarea` / `Select`** — 14px text on paper-raised; hints and
+  errors at `text-sm`. On ink, the editor wraps fields in `InkSurface`
+  (apps/web project-editor/EditorFields) so they switch to on-ink tokens.
+- **`Spinner`**, **`CodeBlock`** (ink-deep command/block with copy),
+  **`EmptyState`** (`illustration` takes a Stacky pose or sticker; `icon` is
+  the fallback tile), **`SectionHeading`** (`onInk` for the ink shell,
+  `highlight` colours one word).
+- Removed: `Badge` → `Chip`, `IconCircle` → `IconTile`, `Tabs` → `Segmented`
+  (or a real tablist when there are panels), `Progress`, `InputField`.
 
-## Alert
+## Illustrations (`@stackitfast/ui/illustrations`)
 
-- Radius `rounded-[5px]` → **`rounded-md`**.
-- `error`: raw `red-950/red-800/red-300` Tailwind defaults →
-  **`bg-status-dangerSoft border-status-dangerInk/30 text-status-dangerInk`**.
-- `success`: was actually using the **accent/amber** color for a
-  success state (`bg-accent-subtle border-accent/40 text-accent`) — this
-  was a pre-existing semantic mismatch, not just a theme issue. Fixed to
-  real green **`status-successSoft`/`status-successInk`** tokens, since the
-  design system now has a proper success color and `variant="success"` is
-  used for genuine success confirmations (`ClaimProjectModal`).
+- `Stacky` — `pose`: default · wink · wave · think · celebrate · sleep. Give it
+  a `title` when it carries meaning, otherwise it is decorative.
+- Tool stickers — `IllSurvey`, `IllExplore`, `IllRules`, `IllCompare`,
+  `IllInsights`, `IllShare`.
+- `CategorySticker` — `category` = directory slug (devtools, saas, ai,
+  data-infra, analytics, internal-tools, content, collaboration, devops,
+  automation, auth-identity, commerce, mobile).
+- Helpers for new drawings: `DieCut`, `Badge`, `Frame` (see the
+  `stackitfast-illustrations` skill).
 
-## Progress
+Size illustrations with a wrapper width (`<div class="w-44"><Stacky/></div>`);
+they scale to their container.
 
-- Fill color `bg-accent` against its `bg-border-subtle` track measured at
-  only **1.71:1** (accent.DEFAULT is a light tone; two light neutrals never
-  clear 3:1 against each other). Fixed to **`bg-accent-border`** (the
-  richer/darker accent-family tone), which clears 3:1 against the light
-  track while staying in the same hue family.
+## Utilities (Tailwind preset)
 
-## Modal
-
-- Panel radius: hardcoded `rounded-t-[12px] sm:rounded-[8px]` /
-  `rounded-[8px]` → **`rounded-lg`** (14px, matching the "modal is a
-  prominent floating surface" rule).
-- All three hardcoded diffuse dark shadows (`shadow-[0_-4px_24px_rgba(0,0,0,0.7)]`,
-  `shadow-[0_24px_60px_-20px_rgba(0,0,0,0.85)]`,
-  `shadow-[0_16px_48px_rgba(0,0,0,0.85)]`) → **`shadow-soft`** (the one
-  token explicitly designed for this exact use case).
-- Scrim: `bg-[rgba(8,8,9,0.8)]` (80% near-black, tuned for a dark app) →
-  **`bg-[rgba(31,26,22,0.4)]`** (tinted ink at 40% — a dark scrim still
-  works fine over a light page, just softer to match the airier aesthetic).
-
-## Input / Textarea / Select (not cva-based, but part of the same fix pass)
-
-All three had the same two systemic issues, now fixed:
-
-1. **Focus ring/border on accent**: `ring-accent` / `border-accent` →
-   **`ring-accent-border` / `border-accent-border`** (Input, Textarea,
-   Select's open state) — same 3:1 non-text contrast reasoning as Button.
-2. **Raw Tailwind `red-*` error states** → `status-dangerInk` /
-   `status-dangerSoft` (Input's `hasError` prop and inline error message
-   span, Textarea's `hasError`, Select's `hasError`).
-
-Select additionally had: hardcoded `rounded-[5px]`/`rounded-[6px]`/
-`rounded-[4px]` → `rounded-md`/`rounded-sm`/`rounded-xs`; a diffuse
-`shadow-[0_16px_36px_rgba(0,0,0,0.85)]` dropdown shadow → `shadow-soft`;
-and three more `text-accent`-on-light-bg spots (open arrow, selected-option
-highlight, checkmark) → `text-accent-ink`.
-
-## Icons (`icons/index.tsx`)
-
-`ICON_STROKE_WIDTH` `2.5` → **`1.75`**.
-
-## Not touched (spot-checked, no hardcoded colors found)
-
-`EmptyState`, `OutboundLink` — both already fully token-driven or contain
-no color classes at all.
+`fold` `fold-sm/lg/xl` `fold-grow` (+ `[--fold-color:…]`) · `lift` ·
+`no-scrollbar` · `animate-snap/rise/pop/drop/blink` (use with `motion-safe:`) ·
+`prose-ink`.

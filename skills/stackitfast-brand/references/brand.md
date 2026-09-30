@@ -40,15 +40,18 @@ Same mark, inverted tile — the family reads as one system at a glance.
 ## Lockup
 
 - Wordmark ink height (ascender→baseline) = **0.55 × tile**, centred on the
-  tile; gap = **0.3 × tile**. Tiles 16/20/24px pair with `text-sm/md/lg`.
+  tile; gap = **0.3 × tile**. Use `BrandLockup` (`@stackitfast/ui`) — it computes the word size from the tile; the header uses 24px, the footer 32px.
 - Clear space around the lockup: one layer height (~0.2 × tile) minimum.
 - Minimum size: 16px tile. Below that use the one-colour
   `safari-pinned-tab.svg` silhouette or nothing.
 
 ## Backgrounds
 
-- Apricot tile: page bg, cards, white, photos. On apricot surfaces or the
-  dark code island, use the ink (FIRST) palette or the one-colour silhouette.
+- Apricot tile: paper, cards, white, photos **and ink** (the shell) — it is
+  8.4:1 against ink. On apricot surfaces use the ink (FIRST) palette or the
+  one-colour silhouette.
+- The ink (FIRST) tile on ink gets a faint cream edge (`BrandMark onInk`), so
+  it never reads as a bare block.
 - Contrast pairs (block on tile, wordmark ink on bg) are in
   `scripts/contrast-check.mjs`.
 
